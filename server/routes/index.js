@@ -1,9 +1,9 @@
-#!/usr/bin/node
+const express = require('express');
 const { Signup, Login } = require('../controllers/AuthController');
 
-const makeRoutes = (app) => {
-    app.post('/signup', Signup);
-    app.post('/login', Login);
-};
+const router = express.Router();
 
-module.exports = { makeRoutes };
+router.post('/signup', Signup);
+router.post('/login', Login);
+
+module.exports = { router };
