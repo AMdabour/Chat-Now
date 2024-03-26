@@ -62,7 +62,7 @@ const Auth = () => {
                             <div className="auth__form-container_fields-content_input">
                                 <label htmlFor="fullName">Full Name</label>
                                 <input 
-                                    id="fullName" 
+                                    name="fullName" 
                                     type="text"
                                     placeholder="Full Name"
                                     onChange={handleChange}
@@ -73,7 +73,7 @@ const Auth = () => {
                         <div className="auth__form-container_fields-content_input">
                             <label htmlFor="username">Username</label>
                                 <input 
-                                    id="username" 
+                                    name="username" 
                                     type="text"
                                     placeholder="Username"
                                     onChange={handleChange}
@@ -84,7 +84,7 @@ const Auth = () => {
                             <div className="auth__form-container_fields-content_input">
                                 <label htmlFor="phoneNumber">Phone Number</label>
                                 <input 
-                                    id="phoneNumber" 
+                                    name="phoneNumber" 
                                     type="text"
                                     placeholder="Phone Number"
                                     onChange={handleChange}
@@ -96,7 +96,7 @@ const Auth = () => {
                             <div className="auth__form-container_fields-content_input">
                                 <label htmlFor="avatarURL">Avatar URL</label>
                                 <input 
-                                    id="avatarURL" 
+                                    name="avatarURL" 
                                     type="text"
                                     placeholder="Avatar URL"
                                     onChange={handleChange}
@@ -106,7 +106,7 @@ const Auth = () => {
                         <div className="auth__form-container_fields-content_input">
                                 <label htmlFor="password">Password</label>
                                 <input 
-                                    id="password" 
+                                    name="password" 
                                     type="password"
                                     placeholder="Password"
                                     onChange={handleChange}
@@ -117,7 +117,7 @@ const Auth = () => {
                             <div className="auth__form-container_fields-content_input">
                                 <label htmlFor="confirmPassword">Confirm Password</label>
                                 <input 
-                                    id="confirmPassword" 
+                                    name="confirmPassword" 
                                     type="password"
                                     placeholder="Confirm Password"
                                     onChange={handleChange}
@@ -136,7 +136,7 @@ const Auth = () => {
                              : "Don't have an account?"
                              }
                              <span onClick={switchMode}>
-                             {isSignup ? 'Sign In' : 'Sign Up'}
+                             {isSignup ? 'Login' : 'Sign Up'}
                              </span>
                         </p>
                     </div>

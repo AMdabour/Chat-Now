@@ -56,7 +56,6 @@ const UserList = ({ setSelectedUsers }) => {
             try {
                 const response = await client.queryUsers(
                     { id: { $ne: client.userID } },
-                    { id: 1 },
                     { limit: 8 } 
                 );
 
@@ -72,13 +71,14 @@ const UserList = ({ setSelectedUsers }) => {
         }
 
         if(client) getUsers()
-    }, [client, loading]);
+    }, []);
 
     if(error) {
         return (
             <ListContainer>
                 <div className="user-list__message">
                     Error loading, please refresh and try again.
+                    {console.log(error)}
                 </div>
             </ListContainer>
         )

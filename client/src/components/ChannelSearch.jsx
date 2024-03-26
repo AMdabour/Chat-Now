@@ -20,12 +20,12 @@ const ChannelSearch = ({ setToggleContainer }) => {
 
     const getChannels = async (text) => {
         try {
-            const channelResponse = client.queryChannels({
+            const channelResponse = await client.queryChannels({
                 type: 'team', 
                 name: { $autocomplete: text }, 
                 members: { $in: [client.userID]}
             });
-            const userResponse = client.queryUsers({
+            const userResponse = await client.queryUsers({
                 id: { $ne: client.userID },
                 name: { $autocomplete: text }
             })
@@ -55,7 +55,7 @@ const ChannelSearch = ({ setToggleContainer }) => {
     return (
         <div className="channel-search__container">
             <div className="channel-search__input__wrapper">
-                <div className="channel-serach__input__icon">
+                <div className="channel-search__input__icon">
                     <SearchIcon />
                 </div>
                 <input 
