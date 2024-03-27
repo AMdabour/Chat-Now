@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Cookies from 'universal-cookie';
 import axios from 'axios';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
@@ -12,6 +12,7 @@ const initialState = {
     username: '',
     password: '',
     confirmPassword: '',
+    invalidatePassworderror: '',
     phoneNumber: '',
     avatarURL: '',
 }
@@ -33,6 +34,17 @@ const Auth = () => {
         setForm({ ...form, showPassword: !form.showPassword });
     }
 
+    const checkUsernameAvailability = async (username) => {
+        try {
+            const URL = `http://localhost:${port}/auth/check-username`;
+            const response = await axios.post(URL, { username });
+            return response.data.isAvailable;
+        } catch (error) {
+            console.error('Error checking username availability:', error);
+            return false;
+        }
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const { password, confirmPassword } = form;
@@ -40,6 +52,11 @@ const Auth = () => {
         if (!validatePassword(password)) {
             setForm({ ...form, invalidatePassworderror: 'Password is weak. It should contain at least one digit, one special character, and be at least 6 characters long' });
             return;
+        }
+
+        if(validatePassword(password))
+        {
+            setForm({ ...form, invalidatePassworderro : ''});
         }
 
         if (password !== confirmPassword) {
@@ -50,6 +67,11 @@ const Auth = () => {
         
         const { username, phoneNumber, avatarURL } = form;
 
+        const isUsernameUnique = await checkUsernameAvailability(username);
+        if (!isUsernameUnique) {
+            setForm({ ...form, errorUser: 'Username is already taken' });
+            return;
+        }
         // const { username, password, phoneNumber, avatarURL } = form;
 
         const URL = `http://localhost:${port}/auth`;
@@ -75,6 +97,16 @@ const Auth = () => {
     const switchMode = () => {
         setIsSignup((prevIsSignup) => !prevIsSignup);
     }
+
+    console.log(form, validatePassword(form.password));
+
+    useEffect(() => {
+        if(validatePassword(form.password))
+        {
+            setForm({ ...form, invalidatePassworderror : ''});
+        }
+    }, [form.password]);
+
 
     return (
         <div className="auth__form-container">
@@ -103,6 +135,7 @@ const Auth = () => {
                                     onChange={handleChange}
                                     required
                                 />
+                            <div className="floating-error">{form.errorUser !== '' && (<p>{form.errorUser}</p>)}</div>
                             </div>
                         {isSignup && (
                             <div className="auth__form-container_fields-content_input">
@@ -141,7 +174,7 @@ const Auth = () => {
                                     {form.showPassword ? <FaEyeSlash /> : <FaEye />} {/* Eye icon toggle */}
                                 </span>
                             </div>
-                            <div className="floating-error">{form.invalidatePassworderror && <p>{form.invalidatePassworderror}</p>}</div>
+                            <div className="floating-error">{form.invalidatePassworderror !== '' && (<p>{form.invalidatePassworderror}</p>)}</div>
                             </div>
                         {isSignup && (
                             <div className="auth__form-container_fields-content_input">
