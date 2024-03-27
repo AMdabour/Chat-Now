@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Cookies from 'universal-cookie';
 import axios from 'axios';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 import signupImage from '../assets/signup.jpg';
 
@@ -23,10 +24,33 @@ const Auth = () => {
         setForm({ ...form, [e.target.name]: e.target.value });
     }
 
+    const validatePassword = (password) => {
+        const regex = /^(?=.*[a-zA-Z])(?=.*[!@#$%^&*])(?=.{6,})/;
+        return regex.test(password);
+    }
+
+    const togglePasswordVisibility = () => {
+        setForm({ ...form, showPassword: !form.showPassword });
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const { password, confirmPassword } = form;
+        
+        if (!validatePassword(password)) {
+            setForm({ ...form, invalidatePassworderror: 'Password is weak. It should contain at least one digit, one special character, and be at least 6 characters long' });
+            return;
+        }
 
-        const { username, password, phoneNumber, avatarURL } = form;
+        if (password !== confirmPassword) {
+            setForm({ ...form, error: 'Passwords do not match' });
+            return;
+        }
+
+        
+        const { username, phoneNumber, avatarURL } = form;
+
+        // const { username, password, phoneNumber, avatarURL } = form;
 
         const URL = `http://localhost:${port}/auth`;
 
@@ -105,13 +129,19 @@ const Auth = () => {
                         )}
                         <div className="auth__form-container_fields-content_input">
                                 <label htmlFor="password">Password</label>
+                                <div className="password-input-container">
                                 <input 
                                     name="password" 
-                                    type="password"
+                                    type={form.showPassword ? 'text' : 'password'} // Use state to toggle password visibility
                                     placeholder="Password"
                                     onChange={handleChange}
                                     required
                                 />
+                                <span className="password-toggle-icon" onClick={togglePasswordVisibility}>
+                                    {form.showPassword ? <FaEyeSlash /> : <FaEye />} {/* Eye icon toggle */}
+                                </span>
+                            </div>
+                            <div className="floating-error">{form.invalidatePassworderror && <p>{form.invalidatePassworderror}</p>}</div>
                             </div>
                         {isSignup && (
                             <div className="auth__form-container_fields-content_input">
@@ -123,6 +153,7 @@ const Auth = () => {
                                     onChange={handleChange}
                                     required
                                 />
+                            <div className="floating-error">{form.error && <p>{form.error}</p>}</div>
                             </div>
                             )}
                         <div className="auth__form-container_fields-content_button">
