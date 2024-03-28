@@ -72,6 +72,31 @@ const Auth = () => {
             }
         }
 
+        if (!isSignup){
+            const { username, password } = form;
+            const URL = `http://localhost:5000/auth/login`;
+
+            try {
+                const response = await axios.post(URL, {
+                    username,
+                    password,
+                });
+                const available = response.data.message.available;
+                if (!available) {
+                    setForm({ ...form, errorUser: 'invalid credentials' });
+                    return;
+                }
+            } catch (error) {
+                setForm({ ...form, errorUser: 'invalid credentials' });
+                return;
+                // if (error.response && error.response.status === 401) {
+                //     setForm({ ...form, error: 'Invalid credentials' });
+                // } else {
+                //     console.error('Error:', error);
+                // }
+            }
+        };
+
         const { username, password, phoneNumber, avatarURL } = form;
 
         const URL = `http://localhost:5000/auth`;
