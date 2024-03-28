@@ -53,4 +53,17 @@ const Login = async (req, res) => {
     }
 };
 
-module.exports = { Signup, Login }
+const CheckUsername = async (req, res) => {
+    try {
+        const { username } = req.body
+        const client = StreamChat.getInstance(api_key, api_secret);
+        const { users } = await client.queryUsers({ name: username });
+        if (!users.length) return res.status(200).json({ data: { isAvailable: true }});
+        return res.status(400).json({ data: { isAvailable: false }});
+    }
+    catch (error){
+        return res.status(401).json({ data: { isAvailable: false }})
+    }
+};
+
+module.exports = { Signup, Login, CheckUsername };

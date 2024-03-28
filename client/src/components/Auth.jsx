@@ -36,45 +36,45 @@ const Auth = () => {
 
     const checkUsernameAvailability = async (username) => {
         try {
-            const URL = `http://localhost:${port}/auth/check-username`;
+            const URL = `http://localhost:5000/auth/check-username`;
             const response = await axios.post(URL, { username });
-            return response.data.isAvailable;
+            console.log(response);
+            return response.data.data.isAvailable;
         } catch (error) {
-            console.error('Error checking username availability:', error);
             return false;
         }
-    }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const { password, confirmPassword } = form;
+        if (isSignup) {
+            const { username, password, confirmPassword } = form;
         
-        if (!validatePassword(password)) {
-            setForm({ ...form, invalidatePassworderror: 'Password is weak. It should contain at least one digit, one special character, and be at least 6 characters long' });
-            return;
+            if (!validatePassword(password)) {
+                setForm({ ...form, invalidatePassworderror: 'Password is weak. It should contain at least one digit, one special character, and be at least 6 characters long' });
+                return;
+            }
+
+            if(validatePassword(password))
+            {
+                setForm({ ...form, invalidatePassworderro : ''});
+            }
+
+            if (password !== confirmPassword) {
+                setForm({ ...form, error: 'Passwords do not match' });
+                return;
+            }
+
+            const isUsernameUnique = await checkUsernameAvailability(username);
+            if (!isUsernameUnique) {
+                setForm({ ...form, errorUser: 'Username is already taken' });
+                return;
+            }
         }
 
-        if(validatePassword(password))
-        {
-            setForm({ ...form, invalidatePassworderro : ''});
-        }
+        const { username, password, phoneNumber, avatarURL } = form;
 
-        if (password !== confirmPassword) {
-            setForm({ ...form, error: 'Passwords do not match' });
-            return;
-        }
-
-        
-        const { username, phoneNumber, avatarURL } = form;
-
-        const isUsernameUnique = await checkUsernameAvailability(username);
-        if (!isUsernameUnique) {
-            setForm({ ...form, errorUser: 'Username is already taken' });
-            return;
-        }
-        // const { username, password, phoneNumber, avatarURL } = form;
-
-        const URL = `http://localhost:${port}/auth`;
+        const URL = `http://localhost:5000/auth`;
 
         const { data: { token, userId, hashedPassword, fullName } } = await axios.post(`${URL}/${isSignup ? 'signup' : 'login'}`, {
             username, password, fullName: form.fullName, phoneNumber, avatarURL,
@@ -97,8 +97,6 @@ const Auth = () => {
     const switchMode = () => {
         setIsSignup((prevIsSignup) => !prevIsSignup);
     }
-
-    console.log(form, validatePassword(form.password));
 
     useEffect(() => {
         if(validatePassword(form.password))
