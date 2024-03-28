@@ -36,20 +36,20 @@ const Login = async (req, res) => {
 
         const { users } = await client.queryUsers({ name: username });
 
-        if(!users.length) return res.status(403).json({ message: 'User not found' });
+        if(!users.length) return res.status(403).json({ message: {available: false } });
 
         const success = await bcrypt.compare(password, users[0].hashedPassword);
 
         const token = serverClient.createUserToken(users[0].id);
 
         if(success) {
-            res.status(200).json({ token, fullName: users[0].fullName, username, userId: users[0].id});
+            res.status(200).json({ token, fullName: users[0].fullName, username, userId: users[0].id, message: {available: true }});
         } else {
-            res.status(401).json({ message: 'invalid credentials' });
+            res.status(401).json({ message: {available: false } });
         }
     } catch (error) {
         console.log(error);
-        res.status(401).json({ message: error });
+        res.status(401).json({ message: {available: false } });
     }
 };
 
